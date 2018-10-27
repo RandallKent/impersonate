@@ -21,6 +21,24 @@ export AUTH0_CLIENT_SECRET=xxxxxxx
 
 ## Usage
 
+### Available Command-Line Flags
+
+```
+  --account string
+    	Account name
+  --callback-url string
+    	Callback URL
+  --client-id string
+    	Client ID of the application
+  --impersonator-id string
+    	User ID of impersonator
+  --response-type string
+    	Response Type (default "token id_token")
+  --scope string
+    	OAuth scope (default "openid name user_id nickname email picture")
+```
+
+### Examples
 To impersonate a user pass the Client ID of your application (not your account),
 the "impersonator" user ID (you), and the ID of the user.
 

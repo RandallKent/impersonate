@@ -16,6 +16,7 @@ import (
 type additionalParameters struct {
 	ResponseType string `json:"response_type"`
 	Scope        string `json:"scope"`
+	CallbackURL  string `json:"callback_url"`
 }
 
 // impersonationInput request input.
@@ -47,6 +48,8 @@ func main() {
 	appClientID := flag.String("client-id", "", "Client ID of the application")
 	account := flag.String("account", "", "Account name")
 	scope := flag.String("scope", "openid name user_id nickname email picture", "OAuth scope")
+	callbackURL := flag.String("callback-url", "", "Callback URL")
+	responseType := flag.String("response-type", "token id_token", "Response Type")
 
 	flag.Parse()
 
@@ -60,7 +63,7 @@ func main() {
 		log.Fatalf("error fetching token: %s", err)
 	}
 
-	link, err := getImpersionationLink(*account, userID, *impersonatorID, *appClientID, token, *scope)
+	link, err := getImpersionationLink(*account, userID, *impersonatorID, *appClientID, token, *scope, *responseType, *callbackURL)
 	if err != nil {
 		log.Fatalf("error fetching link: %s", err)
 	}
@@ -97,7 +100,7 @@ func getToken(account, clientID, clientSecret string) (string, error) {
 }
 
 // getImpersionationLink returns a link which can be used to authenticate as the user.
-func getImpersionationLink(account, userID, impersonatorID, clientID, token, scope string) (string, error) {
+func getImpersionationLink(account, userID, impersonatorID, clientID, token, scope string, responseType string, callbackURL string) (string, error) {
 	url := fmt.Sprintf("https://%s.auth0.com/users/%s/impersonate", account, userID)
 
 	body := &impersonationInput{
@@ -105,8 +108,9 @@ func getImpersionationLink(account, userID, impersonatorID, clientID, token, sco
 		ImpersonatorID: impersonatorID,
 		ClientID:       clientID,
 		AdditionalParameters: additionalParameters{
-			ResponseType: "token",
+			ResponseType: responseType,
 			Scope:        scope,
+			CallbackURL:  callbackURL,
 		},
 	}
 
